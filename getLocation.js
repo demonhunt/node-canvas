@@ -11,6 +11,10 @@ const ctx = canvas.getContext('2d')
 app.use(cors());
 app.use(bodyParser.json({limit: '50mb', extended: true}))
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
+app.post("/getlocationtest", async (req, res, next) => {
+    res.status(200).send({ success: "test", data: result });
+
+})
 
 app.post("/getlocation", async (req, res, next) => {
     var param = req.body;
