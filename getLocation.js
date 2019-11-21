@@ -6,7 +6,8 @@ var cors = require('cors');
 var request = require('request');
 const { createCanvas, loadImage, Image } = require('canvas')
 const canvas = createCanvas(640, 1200)
-const ctx = canvas.getContext('2d')
+const ctx = canvas.getContext('2d');
+const {ApiGet} = require("./apifetcher");
 
 app.use(cors());
 app.use(bodyParser.json({limit: '50mb', extended: true}))
@@ -22,8 +23,71 @@ app.post("/getlocation", async (req, res, next) => {
     var sku = param.sku;
     var price = param.price;
     var locationtext = param.locationtext;
-    var locationOnMap = param.locationOnMap;
+    //var locationOnMap = param.locationOnMap;
+    var locationOnMap= [
+        {
+            "Name": "A",
+            "Location": {
+                "x": 165,
+                "y": 1080
+            }
+        },
+        {
+            "Name": "B",
+            "Location": {
+                "x": 180,
+                "y": 948
+            }
+        },
+        {
+            "Name": "C",
+            "Location": {
+                "x": 170,
+                "y": 742
+            }
+        },
+        {
+            "Name": "D",
+            "Location": {
+                "x": 280,
+                "y": 530
+            }
+        },
+        {
+            "Name": "E",
+            "Location": {
+                "x": 340,
+                "y": 670
+            }
+        },
+        {
+            "Name": "F",
+            "Location": {
+                "x": 355,
+                "y": 795
+            }
+        },
+        {
+            "Name": "G",
+            "Location": {
+                "x": 365,
+                "y": 920
+            }
+        }
+    ];
+    var bookstoreId = param.bookStore;
 
+    let data = {};
+    var url = "";
+    if (bookstoreId != 0) {
+        data.bookStore = bookstoreId;
+    }
+    await ApiGet("bookstore/getlayout", data).then((res) => {
+        url = res.data[0].url;
+    }).catch((e)=>{
+        console.log(e)
+    })
+    
     ctx.beginPath();
     ctx.rect(0, 0, 640, 1662);
     ctx.fillStyle = "white";
@@ -76,8 +140,7 @@ app.post("/getlocation", async (req, res, next) => {
     await ctx.fill();
     ctx.fillText("Vị trí sản phẩm", 390, 420);
     
-
-    await fs.readFile('./Layout-NS-Tan-Dinh-2.jpg', (err, squid) => {
+    await fs.readFile('./'+ bookstoreId +'.jpg', (err, squid) => {
         if (err) throw err
         const img = new Image()
         img.onload = () => {
